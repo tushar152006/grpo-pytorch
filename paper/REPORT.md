@@ -118,6 +118,24 @@ We conducted online policy optimization on a verifiable arithmetic reasoning tas
 
 ---
 
+### 4.1 Systematic Ablation Studies
+
+#### A. Group Sampling Budget ($G \in \{2, 4, 8\}$)
+<p align="center">
+  <img src="../assets/ablation_group_size.png" alt="Group Budget Ablation" width="850">
+</p>
+
+Increasing group budget from $G=2$ to $G=8$ stabilizes advantage estimation variance. With $G=8$, the policy computes a statistically robust baseline, keeping token clipping fractions strictly inside the optimal $[0.04, 0.08]$ trust region.
+
+#### B. Schulman KL Divergence Regularization ($\beta \in \{0.0, 0.04, 0.20\}$)
+<p align="center">
+  <img src="../assets/ablation_kl_drift.png" alt="KL Regularization Ablation" width="850">
+</p>
+
+Setting $\beta = 0.0$ allows unconstrained policy drift. A balanced $\beta = 0.04$ enforces bounded exploration ($D_{\text{KL}} \le 0.010$) while preventing policy collapse. Over-regularization ($\beta = 0.20$) severely restricts exploratory reasoning trajectories.
+
+---
+
 ## 5. Conclusion & Research Significance
 This work establishes that DeepSeek-R1 style Group Relative Policy Optimization can be implemented, verified, and stabilized in pure PyTorch without relying on black-box training frameworks. By eliminating the Critic network, enforcing explicit zero-variance advantage guards, and isolating prompt tokens through dynamic sequence masks, GRPO provides a memory-efficient, mathematically rigorous paradigm for test-time reasoning alignment.
 
