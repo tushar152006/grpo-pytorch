@@ -92,7 +92,7 @@ $$A_i = \frac{R_i - \mu_{\{R\}}}{\sigma_{\{R\}} + \epsilon}, \quad \text{where }
 
 ### 2. Clipped Surrogate Objective
 $$\mathcal{L}_{\text{CLIP}}(\theta) = -\frac{1}{N}\sum_{i=1}^N \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \min\left(r_{t,i}(\theta) A_i, \; \text{clip}(r_{t,i}(\theta), 1-\epsilon, 1+\epsilon) A_i\right)$$
-where $r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{<t,i}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{<t,i}, q)}$.
+where $r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{1:t-1}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{1:t-1}, q)}$.
 
 ### 3. Schulman $k_3$ Non-Negative KL Estimator
 $$D_{\text{KL}}^{k_3}(\pi_\theta \parallel \pi_{\text{ref}}) = \frac{\pi_{\text{ref}}}{\pi_\theta} - \log\left(\frac{\pi_{\text{ref}}}{\pi_\theta}\right) - 1 \ge 0$$

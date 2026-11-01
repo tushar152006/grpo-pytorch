@@ -1,3 +1,4 @@
+
 # Dissecting Group Relative Policy Optimization (GRPO) from First Principles: Mathematical Invariants, Tensor Vectorization, and Empirical Reasoning Dynamics
 
 **Author:** Burla Tushar Chandramouli  
@@ -37,9 +38,9 @@ $$A_i = 0 \quad \text{if} \quad \sigma_{\{R\}} < 10^{-7}$$
 ### 2.2 Vectorized Token-Level Log-Probability Extraction
 To eliminate Python loops over batch and sequence dimensions, per-token log-probabilities are extracted via multidimensional tensor gathering:
 
-$$\text{Logits} \in \mathbb{R}^{N \times L \times V} \xrightarrow{\log \operatorname{softmax}} \log P \in \mathbb{R}^{N \times L \times V}$$
+$$\text{Logits} \in \mathbb{R}^{N \times L \times V} \longrightarrow \log P = \log \text{softmax}(\text{Logits}) \in \mathbb{R}^{N \times L \times V}$$
 
-$$\log \pi(y_t \mid y_{<t}, x) = \log P_{i, t, y_{i,t}}$$
+$$\log \pi(y_t \mid y_{1:t-1}, x) = \log P_{i, t, y_{i,t}}$$
 
 where $N = B \cdot G$, $L$ is sequence length, and $V$ is vocabulary cardinality.
 
@@ -51,7 +52,7 @@ token_log_probs = torch.gather(log_probs, dim=-1, index=targets.unsqueeze(-1)).s
 ```
 
 ### 2.3 Clipped Surrogate Policy Gradient
-Let $r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{<t,i}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{<t,i}, q)}$ denote the token-level importance sampling ratio. The clipped objective is defined as:
+Let $r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{1:t-1}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{1:t-1}, q)}$ denote the token-level importance sampling ratio. The clipped objective is defined as:
 
 $$\mathcal{L}_{\text{CLIP}}(\theta) = -\frac{1}{N}\sum_{i=1}^N \frac{1}{\sum_{t} M_{i,t}} \sum_{t=1}^L M_{i,t} \cdot \min\left(r_{t,i} A_i, \; \text{clip}(r_{t,i}, 1-\epsilon, 1+\epsilon) A_i\right)$$
 
