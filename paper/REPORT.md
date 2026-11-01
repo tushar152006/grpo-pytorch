@@ -52,16 +52,26 @@ token_log_probs = torch.gather(log_probs, dim=-1, index=targets.unsqueeze(-1)).s
 ```
 
 ### 2.3 Clipped Surrogate Policy Gradient
-Let $r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{1:t-1}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{1:t-1}, q)}$ denote the token-level importance sampling ratio. The clipped objective is defined as:
+Let the importance sampling ratio be:
 
-$$\mathcal{L}_{\text{CLIP}}(\theta) = -\frac{1}{N}\sum_{i=1}^N \frac{1}{\sum_{t} M_{i,t}} \sum_{t=1}^L M_{i,t} \cdot \min\left(r_{t,i} A_i, \; \text{clip}(r_{t,i}, 1-\epsilon, 1+\epsilon) A_i\right)$$
+$$
+r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{1:t-1}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{1:t-1}, q)}
+$$
+
+The clipped objective is defined as:
+
+$$
+\mathcal{L}_{\text{CLIP}}(\theta) = -\frac{1}{N}\sum_{i=1}^N \frac{1}{\sum_{t} M_{i,t}} \sum_{t=1}^L M_{i,t} \cdot \min\left(r_{t,i} A_i, \; \text{clip}(r_{t,i}, 1-\epsilon, 1+\epsilon) A_i\right)
+$$
 
 where $M_{i,t} \in \{0.0, 1.0\}$ represents the binary completion mask, strictly zeroed for prompt and post-EOS padding tokens.
 
 ### 2.4 Schulman $k_3$ Non-Negative KL Estimator
 To anchor $\pi_\theta$ to the frozen reference policy $\pi_{\text{ref}}$, we employ the unbiased low-variance $k_3$ divergence estimator:
 
-$$D_{\text{KL}}^{k_3}(\pi_\theta \parallel \pi_{\text{ref}}) = \frac{\pi_{\text{ref}}}{\pi_\theta} - \log\left(\frac{\pi_{\text{ref}}}{\pi_\theta}\right) - 1$$
+$$
+D_{\text{KL}}^{k_3}(\pi_\theta \parallel \pi_{\text{ref}}) = \frac{\pi_{\text{ref}}}{\pi_\theta} - \log\left(\frac{\pi_{\text{ref}}}{\pi_\theta}\right) - 1
+$$
 
 **Mathematical Invariant:** For any two positive densities, $x - \log x - 1 \ge 0$ with equality strictly if and only if $x = 1$. This eliminates negative KL estimates that destabilize standard log-ratio metrics.
 

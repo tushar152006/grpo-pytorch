@@ -1,3 +1,4 @@
+
 # DeepSeek-R1 GRPO: Native PyTorch Reasoning & Policy Optimization Engine
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
@@ -116,14 +117,28 @@ python experiments/run_countdown.py
 ## 🔬 Mathematical Invariants & Formulations
 
 ### 1. Group-Relative Advantage Normalization
-$$A_i = \frac{R_i - \mu_{\{R\}}}{\sigma_{\{R\}} + \epsilon}, \quad \text{where } A_i = 0 \text{ if } \sigma < 10^{-7}$$
+
+$$
+A_i = \frac{R_i - \mu_{\{R\}}}{\sigma_{\{R\}} + \epsilon}, \quad \text{where } A_i = 0 \text{ if } \sigma < 10^{-7}
+$$
 
 ### 2. Clipped Surrogate Objective
-$$\mathcal{L}_{\text{CLIP}}(\theta) = -\frac{1}{N}\sum_{i=1}^N \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \min\left(r_{t,i}(\theta) A_i, \; \text{clip}(r_{t,i}(\theta), 1-\epsilon, 1+\epsilon) A_i\right)$$
-where $r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{1:t-1}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{1:t-1}, q)}$.
+
+$$
+\mathcal{L}_{\text{CLIP}}(\theta) = -\frac{1}{N}\sum_{i=1}^N \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \min\left(r_{t,i}(\theta) A_i, \; \text{clip}(r_{t,i}(\theta), 1-\epsilon, 1+\epsilon) A_i\right)
+$$
+
+where the importance sampling ratio is defined as:
+
+$$
+r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{1:t-1}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{1:t-1}, q)}
+$$
 
 ### 3. Schulman $k_3$ Non-Negative KL Estimator
-$$D_{\text{KL}}^{k_3}(\pi_\theta \parallel \pi_{\text{ref}}) = \frac{\pi_{\text{ref}}}{\pi_\theta} - \log\left(\frac{\pi_{\text{ref}}}{\pi_\theta}\right) - 1 \ge 0$$
+
+$$
+D_{\text{KL}}^{k_3}(\pi_\theta \parallel \pi_{\text{ref}}) = \frac{\pi_{\text{ref}}}{\pi_\theta} - \log\left(\frac{\pi_{\text{ref}}}{\pi_\theta}\right) - 1 \ge 0
+$$
 
 ---
 
