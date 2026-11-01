@@ -24,6 +24,8 @@ Thumbs.db
 
 # Resumes / Local personal files
 *.pdf
+*.tex
+*resume*
 
 # Local Agent & Framework Configs
 AGENTS.md
