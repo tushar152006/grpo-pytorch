@@ -46,7 +46,7 @@ A complete, mathematical first-principles implementation of **Group Relative Pol
 
 ### 1. Environment Setup
 ```bash
-git clone https://github.com/<your-username>/grpo-pytorch.git
+git clone https://github.com/tushar152006/grpo-pytorch.git
 cd grpo-pytorch
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .\.venv\Scripts\activate
@@ -111,7 +111,7 @@ For formal derivations, tensor dimension specifications, and ablation analysis, 
   title = {Dissecting Group Relative Policy Optimization (GRPO) from First Principles in Pure PyTorch},
   year = {2026},
   publisher = {GitHub},
-  howpublished = {\url{https://github.com/<your-username>/grpo-pytorch}}
+  howpublished = {\url{https://github.com/tushar152006/grpo-pytorch}}
 }
 ```
 

@@ -1,9 +1,7 @@
 # Dissecting Group Relative Policy Optimization (GRPO) from First Principles: Mathematical Invariants, Tensor Vectorization, and Empirical Reasoning Dynamics
 
 **Author:** Burla Tushar Chandramouli  
-**Institution:** Autonomous AI Research Lab / Antigravity Framework  
 **Date:** November 2026  
-**Artifact Classification:** Empirical Research Technical Report  
 
 ---
 
@@ -39,9 +37,18 @@ $$A_i = 0 \quad \text{if} \quad \sigma_{\{R\}} < 10^{-7}$$
 ### 2.2 Vectorized Token-Level Log-Probability Extraction
 To eliminate Python loops over batch and sequence dimensions, per-token log-probabilities are extracted via multidimensional tensor gathering:
 
-$$\text{Logits}: [N, L, V] \xrightarrow{\text{log\_softmax}} [N, L, V]$$
-$$\log \pi(y_t \mid y_{<t}, x) = \text{gather}\left(\log \text{Softmax}(\text{Logits}), \dim=-1, \text{index}=\text{Targets.unsqueeze}(-1)\right).\text{squeeze}(-1)$$
+$$\text{Logits} \in \mathbb{R}^{N \times L \times V} \xrightarrow{\log \operatorname{softmax}} \log P \in \mathbb{R}^{N \times L \times V}$$
+
+$$\log \pi(y_t \mid y_{<t}, x) = \log P_{i, t, y_{i,t}}$$
+
 where $N = B \cdot G$, $L$ is sequence length, and $V$ is vocabulary cardinality.
+
+```python
+# Vectorized PyTorch implementation:
+# logits: [N, L, V] -> log_probs: [N, L, V] -> token_log_probs: [N, L]
+log_probs = F.log_softmax(logits, dim=-1)
+token_log_probs = torch.gather(log_probs, dim=-1, index=targets.unsqueeze(-1)).squeeze(-1)
+```
 
 ### 2.3 Clipped Surrogate Policy Gradient
 Let $r_{t,i}(\theta) = \frac{\pi_\theta(y_{t,i} \mid y_{<t,i}, q)}{\pi_{\text{old}}(y_{t,i} \mid y_{<t,i}, q)}$ denote the token-level importance sampling ratio. The clipped objective is defined as:
