@@ -1,12 +1,15 @@
 
 # DeepSeek-R1 GRPO: Native PyTorch Reasoning & Policy Optimization Engine
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tushar152006/grpo-pytorch/blob/main/notebooks/grpo_smollm_reasoning.ipynb)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![PyTorch 2.15](https://img.shields.io/badge/PyTorch-2.15-orange.svg)](https://pytorch.org/)
-[![Tests](https://img.shields.io/badge/pytest-15%20passed-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/pytest-17%20passed-brightgreen.svg)]()
 [![Code Style: Pure PyTorch](https://img.shields.io/badge/Abstraction-Zero%20Blackboxes-red.svg)]()
 
 A complete, mathematical first-principles implementation of **Group Relative Policy Optimization (GRPO)**—the online reinforcement learning algorithm powering **DeepSeek-R1** and test-time reasoning alignment—authored in native PyTorch tensors without high-level library wrappers (no Hugging Face `TRL`, no `vLLM`, no `Deepspeed`).
+
+Includes end-to-end support for **SmolLM-135M** and an **interactive 1-click Google Colab GPU notebook**.
 
 ---
 
@@ -27,11 +30,14 @@ A complete, mathematical first-principles implementation of **Group Relative Pol
 ├── assets/
 │   ├── ablation_group_size.png            <- Visual ablation: Group Budget G in {2, 4, 8}
 │   └── ablation_kl_drift.png              <- Visual ablation: Schulman KL Regularization beta
+├── notebooks/
+│   └── grpo_smollm_reasoning.ipynb        <- Interactive 1-Click Google Colab Notebook
 ├── src/
 │   ├── loss.py                            <- Group Advantage, Clipped Surrogate Loss, & Schulman KL
 │   ├── sampler.py                         <- Batched Group Rollout Generation & Completion Masking
 │   ├── verifier.py                        <- Deterministic Rule-Based Verifier (LaTeX & XML parsing)
-│   └── trainer.py                         <- End-to-End Online GRPO Training Loop
+│   ├── trainer.py                         <- End-to-End Online GRPO Training Loop
+│   └── hf_adapter.py                      <- Pretrained LLM Loader (SmolLM/Qwen) & Tokenizer Alignment
 ├── experiments/
 │   ├── run_countdown.py                   <- Algorithmic Arithmetic Reasoning Experiment
 │   └── run_ablations.py                   <- Systematic Parameter Sweeps & Visualization Script
@@ -39,7 +45,8 @@ A complete, mathematical first-principles implementation of **Group Relative Pol
 │   ├── test_loss.py                       <- Unit tests for math, gradients, and numerical stability
 │   ├── test_sampler.py                    <- Unit tests for prompt repeating and EOS masking
 │   ├── test_verifier.py                   <- Unit tests for answer parsing and reward calculation
-│   └── test_trainer.py                    <- Integration tests for optimizer updates and learning
+│   ├── test_trainer.py                    <- Integration tests for optimizer updates and learning
+│   └── test_hf_adapter.py                 <- Unit tests for pretrained tokenizer and prompt alignment
 ├── paper/
 │   └── REPORT.md                          <- 4-Page NeurIPS/ICLR-style Empirical Research Report
 └── README.md                              <- Project Documentation
@@ -104,7 +111,9 @@ tests/test_verifier.py::test_extract_tagged_answer PASSED
 tests/test_verifier.py::test_check_format_compliance PASSED
 tests/test_verifier.py::test_compute_reasoning_reward_numerical_equivalence PASSED
 tests/test_verifier.py::test_compute_reasoning_reward_wrong_answer PASSED
-======================= 15 passed in 14.39s =======================
+tests/test_hf_adapter.py::test_format_reasoning_prompt PASSED
+tests/test_hf_adapter.py::test_batch_tokenize_prompts_mock PASSED
+======================= 17 passed in 11.06s =======================
 ```
 
 ### 3. Run the Online Reasoning Experiment
